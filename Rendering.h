@@ -25,7 +25,7 @@ public://メンバ関数
 #pragma region //4x4行列関数の作成
 
 	/// <summary>
-	/// 投資投影行列
+	/// 透視投影行列
 	/// </summary>
 	/// <param name="perspective"></param>
 	/// <returns></returns>
