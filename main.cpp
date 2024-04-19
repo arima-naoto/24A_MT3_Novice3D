@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		rendering->Update();
+		//rendering->Update();
 
 		///
 		/// ↑更新処理ここまで
@@ -38,7 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		rendering->Draw();
+		//rendering->Draw();
 
 		///
 		/// ↑描画処理ここまで
