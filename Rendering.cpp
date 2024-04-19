@@ -1,99 +1,134 @@
 ﻿#include "Rendering.h"
 #include <Novice.h>
 #define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
+#include <cassert>
 
-static const int kRowHeight = 20;
-static const int kColumnWidth = 60;
-
-float cot(float x)
+Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 {
-	return 1.0f / tanf(x);
-}
+	Matrix4x4 MultiplyMatrix{};
 
-/// <summary>
-/// 初期化処理
-/// </summary>
-Rendering::Rendering(){
-	orthographicMatrix_ = {};
-	perspectiveFovMatrix_ = {};
-	viewportMatrix_ = {};
-}
-
-/// <summary>
-/// 4x4行列の数値表示
-/// </summary>
-/// <param name="x">座標X</param>
-/// <param name="y">座標Y</param>
-/// <param name="matrix">4x4行列</param>
-/// <param name="label">文字列</param>
-void Rendering::MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label)
-{
-	Novice::ScreenPrintf(x, y, label);
-
-	for (int row = 0; row < 4; row++)
-	{
-		for (int column = 0; column < 4; column++)
-		{
-			Novice::ScreenPrintf(x + column * kColumnWidth, y + row * kRowHeight + 20, "%6.02f", matrix.m[row][column]);
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			MultiplyMatrix.m[i][j] = 0;
+			for (int k = 0; k < 4; k++)
+			{
+				MultiplyMatrix.m[i][j] += m1.m[i][k] * m2.m[k][j];
+			}
 		}
 	}
+
+	return MultiplyMatrix;
+}
+
+#pragma region アフィン変換で使用するメンバ関数の定義
+
+/// <summary>
+/// 拡大縮小行列
+/// </summary>
+/// <param name="scale"></param>
+/// <returns></returns>
+Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
+{
+	Matrix4x4 resultScale = {
+		scale.x,0.0f,0.0f,0.0f,
+		0.0f,scale.y,0.0f,0.0f,
+		0.0f,0.0f,scale.z,0.0f,
+		0.0f,0.0f,0.0f,1.0f
+	};
+
+	return resultScale;
 }
 
 /// <summary>
-/// 投資投影行列
+/// X軸回転行列
 /// </summary>
-/// <param name="perspective"></param>
+/// <param name="radian"></param>
 /// <returns></returns>
-Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
+Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 {
-	Matrix4x4 resultPerspectiveFov = {
-		1.0f / aspectRatio * cot(fovY / 2.0f),0.0f,0.0f,0.0f,
-		0.0f,cot(fovY / 2.0f),0.0f,0.0f,
-		0.0f,0.0f,farClip / (farClip - nearClip),1.0f,
-		0.0f,0.0f,-nearClip * farClip / (farClip - nearClip),0.0f
+	Matrix4x4 rotateXMatrix = {
+		1.0f,0.0f,0.0f,0.0f,
+		0.0f,std::cos(radian),std::sin(radian),0.0f,
+		0.0f,-std::sin(radian),std::cos(radian),0.0f,
+		0.0f,0.0f,0.0f,1.0f
 	};
 
-	return resultPerspectiveFov;
+	return rotateXMatrix;
 }
 
 /// <summary>
-/// 正射影行列
+/// Y軸回転行列
 /// </summary>
-/// <param name="point"></param>
+/// <param name="radian"></param>
 /// <returns></returns>
-Matrix4x4 Rendering::MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip)
+Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 {
-	Matrix4x4 resultOrthographic = {
-		2.0f / (right - left),0.0f,0.0f,0.0f,
-		0.0f,2.0f / (top - bottom),0.0f,0.0f,
-		0.0f,0.0f,1.0f /(farClip - nearClip),0.0f,
-		(left + right) / (left - right),(top + bottom) / (bottom - top),nearClip / (nearClip - farClip),1.0f
+	Matrix4x4 rotateYMatrix = {
+		std::cos(radian),0.0f,-std::sin(radian),0.0f,
+		0.0f,1.0f,0.0f,0.0f,
+		std::sin(radian),0.0f,std::cos(radian),0.0f,
+		0.0f,0.0f,0.0f,1.0f
 	};
 
-	return resultOrthographic;
+	return rotateYMatrix;
 }
 
-Matrix4x4 Rendering::MakeViewportMatrix(float left,float top,float width,float height,float minDepth,float maxDepth)
+/// <summary>
+/// Z軸回転行列
+/// </summary>
+/// <param name="radian"></param>
+/// <returns></returns>
+Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 {
-	Matrix4x4 resultViewport = {
-		width / 2.0f,0.0f,0.0f,0.0f,
-		0.0f,-height / 2.0f,0.0f,0.0f,
-		0.0f,0.0f,maxDepth - minDepth,0.0f,
-		left + width / 2.0f,top + height / 2.0f,minDepth,1.0f
+	Matrix4x4 rotateZMatrix = {
+		std::cos(radian),std::sin(radian),0.0f,0.0f,
+		-std::sin(radian),std::cos(radian),0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		0.0f,0.0f,0.0f,1.0f
 	};
 
-	return resultViewport;
+	return rotateZMatrix;
 }
 
-void Rendering::Update(){
-	orthographicMatrix_ = MakeOrthographicMatrix(-160.f, 160.f, 200.0f, 300.0f, 0.0f, 1000.0f);
-	perspectiveFovMatrix_ = MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
-	viewportMatrix_ = MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
+/// <summary>
+/// XYZ軸回転行列
+/// </summary>
+/// <param name="radian"></param>
+/// <returns></returns>
+Matrix4x4 Rendering::MakeRotateXYZMatrix(const Vector3& radian)
+{
+	return Multiply(MakeRotateXMatrix(radian.x), Multiply(MakeRotateYMatrix(radian.y), MakeRotateZMatrix(radian.z)));
 }
 
-void Rendering::Draw(){
-	MatrixScreenPrintf(0, 0, orthographicMatrix_, "orthographicMatrix");
-	MatrixScreenPrintf(0, kRowHeight * 5, perspectiveFovMatrix_, "perspectiveFovMatrix");
-	MatrixScreenPrintf(0, kRowHeight * 10, viewportMatrix_, "viewportMatrix");
+/// <summary>
+/// 平行移動行列
+/// </summary>
+/// <param name="translate"></param>
+/// <returns></returns>
+Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
+{
+	Matrix4x4 resultTranslate = {
+		1.0f,0.0f,0.0f,0.0f,
+		0.0f,1.0f,0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		translate.x,translate.y,translate.z,1.0f
+	};
+
+	return resultTranslate;
 }
+
+#pragma endregion
+
+/// <summary>
+/// アフィン変換行列
+/// </summary>
+/// <param name="affine"></param>
+/// <returns></returns>
+Matrix4x4 Rendering::MakeAffineMatrix(Affine affine) 
+{
+	return Multiply(Multiply(MakeScaleMatrix(affine.scale), MakeRotateXYZMatrix(affine.rotate)), MakeTranslateMatrix(affine.translate));
+}
+
+
+
