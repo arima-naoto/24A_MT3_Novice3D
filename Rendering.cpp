@@ -41,7 +41,7 @@ void Rendering::MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const 
 }
 
 /// <summary>
-/// 投資投影行列
+/// 透視投影行列
 /// </summary>
 /// <param name="perspective"></param>
 /// <returns></returns>
