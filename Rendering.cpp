@@ -324,7 +324,7 @@ Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, floa
 		width / 2.0f,0.0f,0.0f,0.0f,
 		0.0f,-height / 2.0f,0.0f,0.0f,
 		0.0f,0.0f,maxDepth - minDepth,0.0f,
-		(left + width) / 2.0f,(top + height) / 2.0f,minDepth,1.0f
+		left + width / 2.0f,top + height / 2.0f,minDepth,1.0f
 	};
 
 	return resultViewport;
