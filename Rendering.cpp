@@ -20,23 +20,17 @@ float cot(float x){
 
 Rendering::Rendering()
 {
+#pragma region 定義しなければならない
+
 	rotate_ = {};
 	translate_ = {};
-	cameraPosition_ = { 200.0f,200.0f,200.0f };
+	cameraPosition_ = { 200.0f,200.0f,200.0f};
 
 	v1_ = { 1.2f,-3.9f,2.5f };
 	v2_ = { 2.8f,0.4f,-1.3f };
 	cross_ = {};
-	ndcVertex_ = {};
 
-	worldMatrix_ = {};
-	cameraMatrix_ = {};
-	viewMatrix_ = {};
-	projectionMatrix_ = {}; 
-	worldViewProjectionMatrix_;
-	viewportMatrix_ = {};
-
-
+#pragma endregion
 }
 
 void Rendering::Move(char* keys)
@@ -174,7 +168,7 @@ Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 /// </summary>
 /// <param name="radian"></param>
 /// <returns></returns>
-Matrix4x4 Rendering::MakeRotateXYZMatrix(const Vector3& radian)
+Matrix4x4 Rendering::MakeRotateMatrix(const Vector3& radian)
 {
 	return Multiply(MakeRotateXMatrix(radian.x), Multiply(MakeRotateYMatrix(radian.y), MakeRotateZMatrix(radian.z)));
 }
@@ -203,7 +197,7 @@ Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
 /// <returns></returns>
 Matrix4x4 Rendering::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
-	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateXYZMatrix(rotate)),MakeTranslateMatrix(translate));
+	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateMatrix(rotate)),MakeTranslateMatrix(translate));
 }
 
 /// <summary>
@@ -365,23 +359,15 @@ Vector3 Rendering::Cross(const Vector3& v1, const Vector3& v2)
 	return resultCross;
 }
 
-void Rendering::Update(char *keys) {
+void Rendering::Update(char* keys) {
 	Rendering::Move(keys);
-	worldMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
-	cameraMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition_);
-	viewMatrix_ = Rendering::Inverse(cameraMatrix_);
-	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWidnowHeight), 0.1f, 100.0f);
-	worldViewProjectionMatrix_ = Rendering::Multiply(worldMatrix_, Multiply(viewMatrix_, projectionMatrix_));
-	viewportMatrix_ = Rendering::MakeViewportMatrix(0.0f, 0.0f, float(kWindowWidth), float(kWidnowHeight), 0.0f, 1.0f);
 	cross_ = Rendering::Cross(v1_, v2_);
 }
 
 void Rendering::Draw() 
 {
-	Vector3 screenVertices[3];
-	for(uint32_t i = 0; i < 3; i++)
-	{
-	}
+	Rendering::VectorScreenPrintf(0, 0, cross_, "Cross");
+	
 }
 
 

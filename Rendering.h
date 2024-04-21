@@ -72,7 +72,7 @@ public://メンバ関数の作成
 	/// </summary>
 	/// <param name="radian"></param>
 	/// <returns></returns>
-	Matrix4x4 MakeRotateXYZMatrix(const Vector3& radian);
+	Matrix4x4 MakeRotateMatrix(const Vector3& radian);
 
 	/// <summary>
 	/// 平行移動行列
@@ -162,6 +162,8 @@ public://メンバ変数
 	Vector3 translate_;
 	Vector3 cameraPosition_;
 	Vector3 ndcVertex_;
+	Vector3 kLocalVertices_[3];
+	Vector3 screenVertices_[3];
 
 	/// <summary>
 	/// 4x4行列メンバ変数の宣言
