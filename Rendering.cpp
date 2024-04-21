@@ -51,7 +51,7 @@ Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, flo
 		1.0f / aspectRatio * cot(fovY / 2.0f),0.0f,0.0f,0.0f,
 		0.0f,cot(fovY / 2.0f),0.0f,0.0f,
 		0.0f,0.0f,farClip / (farClip - nearClip),1.0f,
-		0.0f,0.0f,-nearClip * farClip / (farClip - nearClip),0.0f
+		0.0f,0.0f,-(nearClip * farClip) / (farClip - nearClip),0.0f
 	};
 
 	return resultPerspectiveFov;
