@@ -14,6 +14,18 @@ public://メンバ関数の作成
 	/// </summary>
 	Rendering();
 
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	/// <param name="keys"></param>
+	void TranslateMove(char* keys);
+
+	/// <summary>
+	/// 回転処理
+	/// </summary>
+	void RotateMove();
+
+
 #pragma region 数値表示用メンバ関数の作成
 
 	/// <summary>
