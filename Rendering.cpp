@@ -7,7 +7,7 @@
 static const int kRowHeight = 20;
 static const int kColumnWidth = 60;
 static const int kWindowWidth = 1280;
-static const int kWidnowHeight = 720;
+static const int kWindowHeight = 720;
 
 /// <summary>
 /// 関数cotを作成
@@ -22,38 +22,42 @@ Rendering::Rendering()
 {
 #pragma region 定義しなければならない
 
+	//3次元ベクトルメンバ変数の初期化
 	rotate_ = {};
 	translate_ = {};
-	cameraPosition_ = { 200.0f,200.0f,200.0f};
-
+	cameraPosition_ = { 0.0f,0.0f,1.0f};
 	v1_ = { 1.2f,-3.9f,2.5f };
 	v2_ = { 2.8f,0.4f,-1.3f };
 	cross_ = {};
+	ndcVertex_ = {};
+	
+	//移動速度
+	translateSpeed_ = { 
+		1.0f / 20.0f,
+		1.0f / 20.0f,
+		0.0f 
+	};
+	
+	//回転速度
+	rotateSpeed_ = 1.0f / 30.0f;
+
+	kLocalVertices_[0] = { 0,0,0 };
+	kLocalVertices_[1] = { -0.5f,1,0 };
+	kLocalVertices_[2] = { 0.5f,1,0 };
+
+	for (uint32_t i = 0; i < 3; i++) {
+		screenVertices_[i] = {};
+	}
+
+	//4x4行列メンバ変数の初期化
+	worldMatrix_ = {};
+	cameraMatrix_ = {};
+	viewMatrix_ = {};
+	projectionMatrix_ = {};
+	worldViewProjectionMatrix_ = {};
+	viewportMatrix_ = {};
 
 #pragma endregion
-}
-
-void Rendering::Move(char* keys)
-{
-	if (keys[DIK_D])
-	{
-		translate_.x += 5.0f;
-	}
-
-	if (keys[DIK_A])
-	{
-		translate_.x -= 5.0f;
-	}
-
-	if (keys[DIK_W]) {
-		translate_.y += 5.0f;
-	}
-
-	if (keys[DIK_S]) {
-		translate_.y -= 5.0f;
-	}
-
-	rotate_.y = 1.0f / 90.0f * float(M_PI);
 }
 
 /// <summary>
@@ -164,7 +168,7 @@ Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 }
 
 /// <summary>
-/// XYZ軸回転行列
+/// 回転行列
 /// </summary>
 /// <param name="radian"></param>
 /// <returns></returns>
@@ -324,7 +328,7 @@ Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, floa
 		width / 2.0f,0.0f,0.0f,0.0f,
 		0.0f,-height / 2.0f,0.0f,0.0f,
 		0.0f,0.0f,maxDepth - minDepth,0.0f,
-		left + width / 2.0f,top + height / 2.0f,minDepth,1.0f
+		(left + width) / 2.0f,(top + height) / 2.0f,minDepth,1.0f
 	};
 
 	return resultViewport;
@@ -332,14 +336,20 @@ Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, floa
 
 #pragma endregion
 
+/// <summary>
+/// 座標変換
+/// </summary>
+/// <param name="vector"></param>
+/// <param name="matrix"></param>
+/// <returns></returns>
 Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix) 
 {
 	Vector3 result;
 
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1];
-	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2];
-	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
 
 	assert(w != 0.0f);
 	result.x /= w;
@@ -360,15 +370,73 @@ Vector3 Rendering::Cross(const Vector3& v1, const Vector3& v2)
 	return resultCross;
 }
 
-void Rendering::Update(char* keys) {
-	Rendering::Move(keys);
+void Rendering::Update(char* keys) 
+{
 	cross_ = Rendering::Cross(v1_, v2_);
+
+#pragma region レンダリングパイプライン
+
+	//ワールド行列
+	worldMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
+	
+	//カメラ行列
+	cameraMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f },cameraPosition_);
+	
+	//ビュー行列
+	viewMatrix_ = Rendering::Inverse(cameraMatrix_);
+	
+	//射影行列
+	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+	
+	//ワールドプロジェクション行列
+	worldViewProjectionMatrix_ = Rendering::Multiply(worldMatrix_, Rendering::Multiply(viewMatrix_, projectionMatrix_));
+	
+	//ビューポート行列
+	viewportMatrix_ = Rendering::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+
+	//座標変換
+	for (uint32_t i = 0; i < 3; ++i) {
+		ndcVertex_ = Rendering::Transform(kLocalVertices_[i], worldViewProjectionMatrix_);
+		screenVertices_[i] = Rendering::Transform(ndcVertex_, viewportMatrix_);
+	}
+
+#pragma endregion
+
+#pragma region キー入力処理
+
+	if (keys[DIK_D])
+	{
+		translate_.x -= translateSpeed_.x;
+	}
+
+	if (keys[DIK_A])
+	{
+		translate_.x += translateSpeed_.x;
+	}
+
+	if (keys[DIK_W]) {
+		translate_.y -= translateSpeed_.y;
+	}
+
+	if (keys[DIK_S]) {
+		translate_.y += translateSpeed_.y;
+	}
+
+	rotate_.y += rotateSpeed_;
+
+#pragma endregion
 }
 
 void Rendering::Draw() 
 {
+	//クロス積の計算結果表示
 	Rendering::VectorScreenPrintf(0, 0, cross_, "Cross");
-	
+
+	//DrawTriangleで座標変換済みの三角形を表示する
+	Novice::DrawTriangle(
+		int(screenVertices_[0].x),int(screenVertices_[0].y),int(screenVertices_[1].x),int(screenVertices_[1].y),
+		int(screenVertices_[2].x),int(screenVertices_[2].y),RED,kFillModeSolid
+	);
 }
 
 

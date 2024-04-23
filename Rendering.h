@@ -14,8 +14,6 @@ public://メンバ関数の作成
 	/// </summary>
 	Rendering();
 
-	void Move(char* keys);
-
 #pragma region 数値表示用メンバ関数の作成
 
 	/// <summary>
@@ -68,7 +66,7 @@ public://メンバ関数の作成
 	Matrix4x4 MakeRotateZMatrix(float radian);
 
 	/// <summary>
-	/// XYZ軸回転行列
+	/// 回転行列
 	/// </summary>
 	/// <param name="radian"></param>
 	/// <returns></returns>
@@ -149,7 +147,7 @@ public://メンバ関数の作成
 	/// </summary>
 	void Draw();
 
-public://メンバ変数
+private://メンバ変数
 
 	/// <summary>
 	/// 3次元ベクトルメンバ変数の宣言
@@ -164,6 +162,9 @@ public://メンバ変数
 	Vector3 ndcVertex_;
 	Vector3 kLocalVertices_[3];
 	Vector3 screenVertices_[3];
+
+	Vector3 translateSpeed_;
+	float rotateSpeed_;
 
 	/// <summary>
 	/// 4x4行列メンバ変数の宣言
