@@ -92,8 +92,9 @@ void Rendering::TranslateMove(char *keys)
 {
 #pragma region キー入力処理
 
-	if (keys[DIK_D])
+	if (keys[DIK_D])//Dキーが押されている間
 	{
+		//三角形を右に動かす
 		translate_.x -= translateSpeed_.x;
 	}
 
@@ -109,8 +110,6 @@ void Rendering::TranslateMove(char *keys)
 	if (keys[DIK_S]) {
 		translate_.z -= translateSpeed_.z;
 	}
-
-	rotate_.y += rotateSpeed_;
 
 #pragma endregion
 }
