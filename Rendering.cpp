@@ -98,16 +98,21 @@ void Rendering::TranslateMove(char *keys)
 		translate_.x -= translateSpeed_.x;
 	}
 
-	if (keys[DIK_A])
+	if (keys[DIK_A])//Aキーが押されている間
 	{
+		//三角形を左に動かす
 		translate_.x += translateSpeed_.x;
 	}
 
-	if (keys[DIK_W]) {
+	if (keys[DIK_W])//Wキーが押されている間 
+	{
+		//三角形を前に動かす
 		translate_.z += translateSpeed_.z;
 	}
 
-	if (keys[DIK_S]) {
+	if (keys[DIK_S])//Sキーが押されている間 
+	{
+		//三角形を後ろに動かす
 		translate_.z -= translateSpeed_.z;
 	}
 
@@ -116,6 +121,7 @@ void Rendering::TranslateMove(char *keys)
 
 void Rendering::RotateMove()
 {
+	//Y軸を中心に回転させる
 	rotate_.y += rotateSpeed_;
 }
 
