@@ -4,9 +4,16 @@
 #include <cmath>
 #include <cassert>
 
+//文字列の縦幅
 static const int kRowHeight = 20;
+
+//文字列の横幅
 static const int kColumnWidth = 60;
+
+//画面の横幅
 static const int kWindowWidth = 1280;
+
+//画面の縦幅
 static const int kWindowHeight = 720;
 
 /// <summary>
