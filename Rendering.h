@@ -14,14 +14,10 @@ public://メンバ関数の作成
 	/// </summary>
 	Rendering();
 
-#pragma region 数値表示用メンバ関数の作成
-
 	/// 3次元ベクトル用
 	void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* lebel);
 
-#pragma endregion
-
-#pragma region 4x4行列メンバ関数の作成
+	float cot(float x);
 
 	/// 行列の積
 	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
@@ -56,17 +52,11 @@ public://メンバ関数の作成
 	/// ビューポート変換行列
 	Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
-#pragma endregion
-
-#pragma region 3次元ベクトルメンバ関数の作成
-
 	/// 座標変換
 	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
 	/// クロス積
 	Vector3 Cross(const Vector3& v1, const Vector3& v2);
-
-#pragma endregion
 
 	// 更新処理
 	void Update();

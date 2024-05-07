@@ -9,21 +9,7 @@ static const int kRowHeight = 20;
 
 //文字列の横幅
 static const int kColumnWidth = 60;
-
-//画面の横幅
-static const int kWindowWidth = 1280;
-
-//画面の縦幅
-static const int kWindowHeight = 720;
-
-/// <summary>
-/// 関数cotを作成
-/// </summary>
-/// <param name="x"></param>
-/// <returns></returns>
-float cot(float x){
-	return 1.0f / tanf(x);
-}
+	
 
 Rendering::Rendering()
 {
@@ -31,20 +17,17 @@ Rendering::Rendering()
 
 	//3次元ベクトル1
 	v1_ = { 1.2f,-3.9f,2.5f };
+	
 	//3次元ベクトル2
 	v2_ = { 2.8f,0.4f,-1.3f };
+	
 	//クロス積
 	cross_ = {};
+
 #pragma endregion
 }
 
-/// <summary>
-/// 数値表示(3次元ベクトル用)
-/// </summary>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="vector"></param>
-/// <param name="label"></param>
+// 数値表示(3次元ベクトル用)
 void Rendering::VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label) {
 	Novice::ScreenPrintf(x, y, "%.02f", vector.x);
 	Novice::ScreenPrintf(x + kColumnWidth, y, "%.02f", vector.y);
@@ -52,14 +35,16 @@ void Rendering::VectorScreenPrintf(int x, int y, const Vector3& vector, const ch
 	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
 }
 
+// 関数cotの作成
+float Rendering::cot(float x)
+{
+	return 1.0f / tanf(x);
+}
+
 #pragma region 4x4行列メンバ関数の定義
 
-/// <summary>
-/// 行列の積
-/// </summary>
-/// <param name="m1"></param>
-/// <param name="m2"></param>
-/// <returns></returns>
+
+// 行列の積
 Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 {
 	Matrix4x4 MultiplyMatrix{};
@@ -78,11 +63,7 @@ Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 	return MultiplyMatrix;
 }
 
-/// <summary>
-/// 拡大縮小行列
-/// </summary>
-/// <param name="scale"></param>
-/// <returns></returns>
+// 拡大縮小行列
 Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
 {
 	
@@ -96,11 +77,7 @@ Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
 	return resultScale;
 }
 
-/// <summary>
-/// X軸回転行列
-/// </summary>
-/// <param name="radian"></param>
-/// <returns></returns>
+// X軸回転行列
 Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 rotateXMatrix = {
@@ -113,11 +90,7 @@ Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 	return rotateXMatrix;
 }
 
-/// <summary>
-/// Y軸回転行列
-/// </summary>
-/// <param name="radian"></param>
-/// <returns></returns>
+// Y軸回転行列
 Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 {
 	Matrix4x4 rotateYMatrix = {
@@ -130,11 +103,7 @@ Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 	return rotateYMatrix;
 }
 
-/// <summary>
-/// Z軸回転行列
-/// </summary>
-/// <param name="radian"></param>
-/// <returns></returns>
+// Z軸回転行列
 Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 {
 	Matrix4x4 rotateZMatrix = {
@@ -147,22 +116,14 @@ Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 	return rotateZMatrix;
 }
 
-/// <summary>
-/// 回転行列
-/// </summary>
-/// <param name="radian"></param>
-/// <returns></returns>
+// 回転行列
 Matrix4x4 Rendering::MakeRotateMatrix(const Vector3& radian)
 {
 	//行列の積を使用して、X軸・Y軸・Z軸回転行列を結合する
 	return Multiply(MakeRotateXMatrix(radian.x), Multiply(MakeRotateYMatrix(radian.y), MakeRotateZMatrix(radian.z)));
 }
 
-/// <summary>
-/// 平行移動行列
-/// </summary>
-/// <param name="translate"></param>
-/// <returns></returns>
+// 平行移動行列
 Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
 {
 	Matrix4x4 resultTranslate = {
@@ -175,22 +136,14 @@ Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
 	return resultTranslate;
 }
 
-/// <summary>
-/// アフィン変換行列
-/// </summary>
-/// <param name="affine"></param>
-/// <returns></returns>
+// アフィン変換行列
 Matrix4x4 Rendering::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
 	//行列の積を使用し、拡大縮小行列・回転行列・平行移動行列を結合する
 	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateMatrix(rotate)),MakeTranslateMatrix(translate));
 }
 
-/// <summary>
-/// 逆行列
-/// </summary>
-/// <param name="m"></param>
-/// <returns></returns>
+// 逆行列
 Matrix4x4 Rendering::Inverse(const Matrix4x4 &m)
 {
 #pragma region //4x4行列の行列式Aを求める
@@ -274,14 +227,7 @@ Matrix4x4 Rendering::Inverse(const Matrix4x4 &m)
 
 }
 
-/// <summary>
-/// 透視投影行列
-/// </summary>
-/// <param name="fovY"></param>
-/// <param name="aspectRatio"></param>
-/// <param name="nearClip"></param>
-/// <param name="farClip"></param>
-/// <returns></returns>
+// 透視投影行列
 Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
 {
 	Matrix4x4 resultPerspectiveFov = {
@@ -294,16 +240,7 @@ Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, flo
 	return resultPerspectiveFov;
 }
 
-/// <summary>
-/// ビューポート変換行列
-/// </summary>
-/// <param name="left">左</param>
-/// <param name="top">上</param>
-/// <param name="width">横幅</param>
-/// <param name="height">縦幅</param>
-/// <param name="minDepth"></param>
-/// <param name="maxDepth"></param>
-/// <returns></returns>
+// ビューポート変換行列
 Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
 {
 	Matrix4x4 resultViewport = {
@@ -318,12 +255,7 @@ Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, floa
 
 #pragma endregion
 
-/// <summary>
-/// 座標変換
-/// </summary>
-/// <param name="vector">3次元ベクトル</param>
-/// <param name="matrix">行列</param>
-/// <returns></returns>
+// 座標変換
 Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix) 
 {
 	Vector3 result;
@@ -341,12 +273,7 @@ Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix)
 	return result;
 }
 
-/// <summary>
-/// クロス積
-/// </summary>
-/// <param name="v1">3次元ベクトル1</param>
-/// <param name="v2">3次元ベクトル2</param>
-/// <returns></returns>
+// クロス積
 Vector3 Rendering::Cross(const Vector3& v1, const Vector3& v2) 
 {
 	//クロス積を求める
