@@ -1,5 +1,6 @@
 #include <Novice.h>
-#include <Rendering.h>
+#include "Camera.h"
+#include "Player.h"
 
 const char kWindowTitle[] = "GC2A_02_アリマ_ナオト";
 
@@ -13,7 +14,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Rendering* rendering = new Rendering();
+	//カメラクラスのインスタンスを作成
+	Camera* camera = new Camera();
+
+	//Playerクラスのインスタンスを作成
+	Player* player = new Player();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -28,7 +33,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		rendering->Update(keys);
+		camera->Update();
+		player->Update(keys, camera);
 
 		///
 		/// ↑更新処理ここまで
@@ -38,7 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		rendering->Draw();
+		player->Draw();
 
 		///
 		/// ↑描画処理ここまで
@@ -55,6 +61,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの終了
 	Novice::Finalize();
-	delete rendering;
+	delete camera, player;
 	return 0;
 }

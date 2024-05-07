@@ -29,55 +29,12 @@ Rendering::Rendering()
 {
 #pragma region 定義しなければならない
 
-    //3次元ベクトルメンバ変数の初期化
-	//回転
-	rotate_ = {};
-	//座標
-	translate_ = {};
-
-	//カメラポジション
-	cameraPosition_ = { 0.0f,0.5f,5.0f};
 	//3次元ベクトル1
 	v1_ = { 1.2f,-3.9f,2.5f };
 	//3次元ベクトル2
 	v2_ = { 2.8f,0.4f,-1.3f };
 	//クロス積
 	cross_ = {};
-	//NDC頂点
-	ndcVertex_ = {};
-	
-	//移動速度
-	translateSpeed_ = { 
-		1.0f / 50.0f,
-		0.0f,
-		1.0f / 40.0f 
-	};
-	//回転速度
-	rotateSpeed_ = 1.0f / 30.0f;
-	//三角形の頂点(ローカル)
-	kLocalVertices_[0] = { 0,0,0 };
-	kLocalVertices_[1] = { -0.5f,1,0 };
-	kLocalVertices_[2] = { 0.5f,1,0 };
-
-	//三角形の頂点(スクリーン)
-	for (uint32_t i = 0; i < 3; i++) {
-		screenVertices_[i] = {};
-	}
-#pragma region 4x4行列メンバ変数の初期化
-	//ワールド行列
-	worldMatrix_ = {};
-	//カメラ行列
-	cameraMatrix_ = {};
-	//ビュー行列
-	viewMatrix_ = {};
-	//プロジェクション行列
-	projectionMatrix_ = {};
-	//ワールドビュープロジェクション行列
-	worldViewProjectionMatrix_ = {};
-	//ビューポート行列
-	viewportMatrix_ = {};
-#pragma endregion
-
 #pragma endregion
 }
 
@@ -93,43 +50,6 @@ void Rendering::VectorScreenPrintf(int x, int y, const Vector3& vector, const ch
 	Novice::ScreenPrintf(x + kColumnWidth, y, "%.02f", vector.y);
 	Novice::ScreenPrintf(x + kColumnWidth * 2, y, "%.02f", vector.z);
 	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
-}
-
-void Rendering::TranslateMove(char *keys)
-{
-#pragma region キー入力処理
-
-	if (keys[DIK_D])//Dキーが押されている間
-	{
-		//三角形を右に動かす
-		translate_.x -= translateSpeed_.x;
-	}
-
-	if (keys[DIK_A])//Aキーが押されている間
-	{
-		//三角形を左に動かす
-		translate_.x += translateSpeed_.x;
-	}
-
-	if (keys[DIK_W])//Wキーが押されている間 
-	{
-		//三角形を前に動かす
-		translate_.z += translateSpeed_.z;
-	}
-
-	if (keys[DIK_S])//Sキーが押されている間 
-	{
-		//三角形を後ろに動かす
-		translate_.z -= translateSpeed_.z;
-	}
-
-#pragma endregion
-}
-
-void Rendering::RotateMove()
-{
-	//Y軸を中心に回転させる
-	rotate_.y += rotateSpeed_;
 }
 
 #pragma region 4x4行列メンバ関数の定義
@@ -439,44 +359,10 @@ Vector3 Rendering::Cross(const Vector3& v1, const Vector3& v2)
 	return resultCross;
 }
 
-void Rendering::Update(char* keys) 
+void Rendering::Update() 
 {
-	//三角形移動処理
-	Rendering::TranslateMove(keys);
-
-	//三角形回転処理
-	Rendering::RotateMove();
-
 	//クロス積の演算
 	cross_ = Rendering::Cross(v1_, v2_);
-
-#pragma region レンダリングパイプライン
-
-	//ワールド行列
-	worldMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
-	
-	//カメラ行列
-	cameraMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f },cameraPosition_);
-	
-	//ビュー行列
-	viewMatrix_ = Rendering::Inverse(cameraMatrix_);
-	
-	//射影行列
-	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-	
-	//ワールドプロジェクション行列
-	worldViewProjectionMatrix_ = Rendering::Multiply(worldMatrix_, Rendering::Multiply(viewMatrix_, projectionMatrix_));
-	
-	//ビューポート行列
-	viewportMatrix_ = Rendering::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-
-	//座標変換
-	for (uint32_t i = 0; i < 3; ++i) {
-		ndcVertex_ = Rendering::Transform(kLocalVertices_[i], worldViewProjectionMatrix_);
-		screenVertices_[i] = Rendering::Transform(ndcVertex_, viewportMatrix_);
-	}
-
-#pragma endregion
 }
 
 void Rendering::Draw() 
@@ -484,11 +370,7 @@ void Rendering::Draw()
 	//クロス積の計算結果表示
 	Rendering::VectorScreenPrintf(0, 0, cross_, "Cross");
 
-	//DrawTriangleで座標変換済みの三角形を表示する
-	Novice::DrawTriangle(
-		int(screenVertices_[0].x),int(screenVertices_[0].y),int(screenVertices_[1].x),int(screenVertices_[1].y),
-		int(screenVertices_[2].x),int(screenVertices_[2].y),RED,kFillModeSolid
-	);
+	
 }
 
 
