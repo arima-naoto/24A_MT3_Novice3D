@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "Rendering.h"
 
+#pragma region Renderingクラスを継承したCameraクラスを宣言
+
 class Camera : public Rendering
 {
 public://メンバ関数
@@ -41,3 +43,4 @@ private://メンバ変数
 
 };
 
+#pragma endregion
