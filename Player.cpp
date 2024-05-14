@@ -36,9 +36,6 @@ Player::Player(Affine affine)
 
 	worldViewProjectionMatrix_ = {};
 
-	kLonEvery_ = {};
-	kLatEvery_ = {};
-
 #pragma endregion
 }
 

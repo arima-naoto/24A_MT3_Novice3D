@@ -61,10 +61,6 @@ private:// メンバ変数
 	//ワールドビュープロジェクション行列
 	Matrix4x4 worldViewProjectionMatrix_;
 
-	float kLonEvery_;
-
-	float kLatEvery_;
-
 };
 
 #pragma endregion
