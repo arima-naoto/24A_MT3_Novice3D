@@ -3,15 +3,11 @@
 #define _USE_MATH_DEFINES
 #include "cmath"
 
-Player::Player()
+Player::Player(Affine affine)
 {
 #pragma region 定義しなければならない
 
-	//座標
-	translate_ = {};
-
-	//回転
-	rotate_ = {};
+	affine_ = affine;
 
 	//NDC頂点
 	ndcVertex_ = {};
@@ -53,25 +49,25 @@ void Player::Translate(char*keys)
 	if (keys[DIK_D])//Dキーが押されている間
 	{
 		//三角形を右に動かす
-		translate_.x -= translateSpeed_.x;
+		affine_.translate.x -= translateSpeed_.x;
 	}
 
 	if (keys[DIK_A])//Aキーが押されている間
 	{
 		//三角形を左に動かす
-		translate_.x += translateSpeed_.x;
+		affine_.translate.x += translateSpeed_.x;
 	}
 
 	if (keys[DIK_W])//Wキーが押されている間 
 	{
 		//三角形を前に動かす
-		translate_.z += translateSpeed_.z;
+		affine_.translate.z += translateSpeed_.z;
 	}
 
 	if (keys[DIK_S])//Sキーが押されている間 
 	{
 		//三角形を後ろに動かす
-		translate_.z -= translateSpeed_.z;
+		affine_.translate.z -= translateSpeed_.z;
 	}
 
 #pragma endregion
@@ -80,7 +76,7 @@ void Player::Translate(char*keys)
 void Player::Rotate()
 {
 	//Y軸を中心に回転させる
-	rotate_.y += rotateSpeed_;
+	affine_.rotate.y += rotateSpeed_;
 }
 
 void Player::Move(char *keys)
@@ -98,7 +94,7 @@ void Player::Update(char *keys,Camera * camera)
 	Player::Move(keys);
 
 	//ワールド行列
-	worldMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
+	worldMatrix_ = Rendering::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
 	
 	//ワールドビュープロジェクション行列
 	worldViewProjectionMatrix_ = Rendering::Multiply(worldMatrix_, Rendering::Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
@@ -121,11 +117,3 @@ void Player::Draw()
 		int(screenVertices_[2].x), int(screenVertices_[2].y), RED, kFillModeSolid
 	);
 }
-
-//void Player::DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix, uint32_t color)
-//{
-//	const uint32_t kSubdivision = 10;
-//	kLonEvery_ = float(M_PI) / float(kSubdivision);
-//	kLatEvery_ = (2 * float(M_PI)) / float(kSubdivision);
-//
-//}

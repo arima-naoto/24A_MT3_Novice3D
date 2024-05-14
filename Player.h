@@ -12,7 +12,7 @@ public:// メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player();
+	Player(Affine affine);
 	
 	/// <summary>
 	/// キー入力移動処理
@@ -36,18 +36,9 @@ public:// メンバ関数
 	//描画処理
 	void Draw();
 
-	void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix, uint32_t color);
-
-
-
-
 private:// メンバ変数
 
-	//座標
-	Vector3 translate_;
-	
-	//回転
-	Vector3 rotate_;
+	Affine affine_;
 	
 	//NDC頂点
 	Vector3 ndcVertex_;

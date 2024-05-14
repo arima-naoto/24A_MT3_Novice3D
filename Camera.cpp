@@ -7,12 +7,12 @@ static const float kWindowWidth = 1280;
 static const float kWindowHeight = 720;
 
 //初期化処理
-Camera::Camera()
+Camera::Camera(Affine affine)
 {
 #pragma region 定義しないといけない
 
 	//カメラ座標
-	cameraPosition = { 0.0f,0.5f,5.0f };
+	affine_ = affine;
 
 	//カメラワールド行列
 	cameraWorldMatrix_ = {};
@@ -33,7 +33,7 @@ Camera::Camera()
 void Camera::Update()
 {
 	//アフィン変換
-	cameraWorldMatrix_ = Rendering::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+	cameraWorldMatrix_ = Rendering::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
 
 	//ビュー行列
 	viewMatrix_ = Rendering::Inverse(cameraWorldMatrix_);

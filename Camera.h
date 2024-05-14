@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Rendering.h"
+#include "Struct.h"
 
 #pragma region Renderingクラスを継承したCameraクラスを宣言
 
@@ -8,7 +9,7 @@ class Camera : public Rendering
 public://メンバ関数
 
 	//コンストラクタ
-	Camera();
+	Camera(Affine affine);
 
 	//更新処理
 	void Update();
@@ -26,8 +27,8 @@ public://Cameraクラスのメンバ変数のカプセル化
 
 private://メンバ変数
 
-	//カメラ座標
-	Vector3 cameraPosition;
+	//アフィン構造体
+	Affine affine_;
 
 	//カメラワールド行列
 	Matrix4x4 cameraWorldMatrix_;

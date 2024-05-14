@@ -1,8 +1,9 @@
 #pragma once
 #include "Vector3.h"
 
-struct Sphere
+struct Affine
 {
-	Vector3 center;
-	float radius;
+	Vector3 scale;
+	Vector3 rotate;
+	Vector3 translate;
 };

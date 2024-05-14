@@ -15,10 +15,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char preKeys[256] = {0};
 
 	//カメラクラスのインスタンスを作成
-	Camera* camera = new Camera();
+	Affine cameraAffine = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.5f,5.0f}};
+	Camera* camera = new Camera(cameraAffine);
 
 	//Playerクラスのインスタンスを作成
-	Player* player = new Player();
+	Affine playerAffine = {{ 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}};
+	Player* player = new Player(playerAffine);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
