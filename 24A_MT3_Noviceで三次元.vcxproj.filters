@@ -41,6 +41,12 @@
     <ClCompile Include="Rendering.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -115,5 +121,8 @@
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
     <ClInclude Include="Rendering.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Struct.h" />
   </ItemGroup>
 </Project>

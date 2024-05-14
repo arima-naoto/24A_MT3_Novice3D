@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Rendering.h"
 #include "Camera.h"
+#include "Struct.h"
 
 #pragma region Renderingクラスを継承したPlayerクラスを作成
 
@@ -35,6 +36,11 @@ public:// メンバ関数
 	//描画処理
 	void Draw();
 
+	void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix, uint32_t color);
+
+
+
+
 private:// メンバ変数
 
 	//座標
@@ -63,6 +69,10 @@ private:// メンバ変数
 	
 	//ワールドビュープロジェクション行列
 	Matrix4x4 worldViewProjectionMatrix_;
+
+	float kLonEvery_;
+
+	float kLatEvery_;
 
 };
 

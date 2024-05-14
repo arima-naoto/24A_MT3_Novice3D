@@ -40,6 +40,9 @@ Player::Player()
 
 	worldViewProjectionMatrix_ = {};
 
+	kLonEvery_ = {};
+	kLatEvery_ = {};
+
 #pragma endregion
 }
 
@@ -118,3 +121,11 @@ void Player::Draw()
 		int(screenVertices_[2].x), int(screenVertices_[2].y), RED, kFillModeSolid
 	);
 }
+
+//void Player::DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjection, const Matrix4x4& viewportMatrix, uint32_t color)
+//{
+//	const uint32_t kSubdivision = 10;
+//	kLonEvery_ = float(M_PI) / float(kSubdivision);
+//	kLatEvery_ = (2 * float(M_PI)) / float(kSubdivision);
+//
+//}
