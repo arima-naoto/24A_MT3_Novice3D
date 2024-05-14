@@ -1,11 +1,5 @@
 ﻿#include "Camera.h"
 
-//画面横幅
-static const float kWindowWidth = 1280;
-
-//画面縦幅
-static const float kWindowHeight = 720;
-
 //初期化処理
 Camera::Camera(Affine affine)
 {
@@ -39,8 +33,8 @@ void Camera::Update()
 	viewMatrix_ = Rendering::Inverse(cameraWorldMatrix_);
 
 	//射影行列
-	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth_) / float(kWindowHeight_), 0.1f, 100.0f);
 
 	//ビューポート行列
-	viewportMatrix_ = Rendering::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+	viewportMatrix_ = Rendering::MakeViewportMatrix(0, 0, float(kWindowWidth_), float(kWindowHeight_), 0.0f, 1.0f);
 }
