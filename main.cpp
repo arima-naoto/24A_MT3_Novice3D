@@ -8,7 +8,7 @@ const char kWindowTitle[] = "GC2A_02_アリマ_ナオト";
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, (int)Camera::GetkWindowWidth(), (int)Camera::GetkWindowHeight());
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};

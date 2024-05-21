@@ -1,6 +1,6 @@
 ﻿#include "Rendering.h"
 #include <Novice.h>
-
+using namespace std;
 
 //文字列の縦幅
 static const int kRowHeight = 20;
@@ -80,8 +80,8 @@ Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 rotateXMatrix = {
 		1.0f,0.0f,0.0f,0.0f,
-		0.0f,std::cos(radian),std::sin(radian),0.0f,
-		0.0f,-std::sin(radian),std::cos(radian),0.0f,
+		0.0f,cosf(radian),sinf(radian),0.0f,
+		0.0f,-sinf(radian),cosf(radian),0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};
 
@@ -92,9 +92,9 @@ Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 {
 	Matrix4x4 rotateYMatrix = {
-		std::cos(radian),0.0f,-std::sin(radian),0.0f,
+		cosf(radian),0.0f,-sinf(radian),0.0f,
 		0.0f,1.0f,0.0f,0.0f,
-		std::sin(radian),0.0f,std::cos(radian),0.0f,
+		sinf(radian),0.0f,cosf(radian),0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};
 
@@ -105,8 +105,8 @@ Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 {
 	Matrix4x4 rotateZMatrix = {
-		std::cos(radian),std::sin(radian),0.0f,0.0f,
-		-std::sin(radian),std::cos(radian),0.0f,0.0f,
+		cosf(radian),sinf(radian),0.0f,0.0f,
+		-sinf(radian),cosf(radian),0.0f,0.0f,
 		0.0f,0.0f,1.0f,0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};

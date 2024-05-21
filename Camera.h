@@ -16,6 +16,10 @@ public://メンバ関数
 
 public://Cameraクラスのメンバ変数のカプセル化
 
+	static float GetkWindowWidth() { return kWindowWidth_; };
+
+	static float GetkWindowHeight() { return kWindowHeight_; };
+
 	//ビュー行列のゲッター
 	Matrix4x4 GetViewMatrix() { return viewMatrix_; };
 
@@ -26,6 +30,12 @@ public://Cameraクラスのメンバ変数のカプセル化
 	Matrix4x4 GetViewportMatrix() { return viewportMatrix_; };
 
 private://メンバ変数
+
+	//画面横幅
+	static inline const float kWindowWidth_ = 1280.0f;
+
+	//画面縦幅
+	static inline const float kWindowHeight_ = 720.0f;
 
 	//アフィン構造体
 	Affine affine_;
@@ -41,9 +51,6 @@ private://メンバ変数
 	
 	//ビューポート行列
 	Matrix4x4 viewportMatrix_;
-
-	
-
 };
 
 #pragma endregion
