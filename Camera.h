@@ -25,10 +25,6 @@ public://Cameraクラスのメンバ変数のカプセル化
 	//ビューポート行列のゲッター
 	Matrix4x4 GetViewportMatrix() { return viewportMatrix_; };
 
-	float GetKWindowWidth() { return kWindowWidth_; };
-
-	float GetKWindowHeight() { return kWindowHeight_; };
-
 private://メンバ変数
 
 	//アフィン構造体
@@ -46,9 +42,7 @@ private://メンバ変数
 	//ビューポート行列
 	Matrix4x4 viewportMatrix_;
 
-	static inline const float kWindowWidth_ = 1280;
-
-	static inline const float kWindowHeight_ = 720;
+	
 
 };
 

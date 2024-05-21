@@ -1,5 +1,9 @@
 ﻿#include "Camera.h"
 
+static const float kWindowWidth_ = 1280.0f;
+
+static const float kWindowHeight_ = 720.0f;
+
 //初期化処理
 Camera::Camera(Affine affine)
 {
