@@ -7,3 +7,9 @@ struct Affine
 	Vector3 rotate;
 	Vector3 translate;
 };
+
+struct Sphere
+{
+	Vector3 center;
+	float radius;
+};

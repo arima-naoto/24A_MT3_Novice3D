@@ -1,77 +1,50 @@
 ﻿#pragma once
 #include "Matrix4x4.h"
 #include "Vector3.h"
+#include "Struct.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <cassert>
 
-/// <summary>
-/// Renderingクラスの作成
-/// </summary>
-class Rendering
-{
-public://メンバ関数の作成
+float cot(float x);
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	Rendering();
+/// 行列の積
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
-	/// 3次元ベクトル用
-	void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* lebel);
+/// 拡大縮小行列
+Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
-	float cot(float x);
+/// X軸回転行列
+Matrix4x4 MakeRotateXMatrix(float radian);
 
-	/// 行列の積
-	Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+/// Y軸回転行列
+Matrix4x4 MakeRotateYMatrix(float radian);
 
-	/// 拡大縮小行列
-	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
+/// Z軸回転行列
+Matrix4x4 MakeRotateZMatrix(float radian);
 
-	/// X軸回転行列
-	Matrix4x4 MakeRotateXMatrix(float radian);
+/// 回転行列
+Matrix4x4 MakeRotateMatrix(const Vector3& radian);
 
-	/// Y軸回転行列
-	Matrix4x4 MakeRotateYMatrix(float radian);
+/// 平行移動行列
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
-	/// Z軸回転行列
-	Matrix4x4 MakeRotateZMatrix(float radian);
+/// アフィン変換行列
+Matrix4x4 MakeAffineMatrix(const Vector3 &scale,const Vector3 &rotate,const Vector3 &translate);
 
-	/// 回転行列
-	Matrix4x4 MakeRotateMatrix(const Vector3& radian);
+/// 逆行列
+Matrix4x4 Inverse(const Matrix4x4& m);
 
-	/// 平行移動行列
-	Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+/// 透視投影行列
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
-	/// アフィン変換行列
-	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+/// ビューポート変換行列
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
-	/// 逆行列
-	Matrix4x4 Inverse(const Matrix4x4& m);
+/// 座標変換
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
-	/// 透視投影行列
-	Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+/// ビュープロジェクション行列
+Matrix4x4 MakeViewProjectionMatrix(const Matrix4x4& projectionMatrix, const Matrix4x4& viewMatrix);
 
-	/// ビューポート変換行列
-	Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
-
-	/// 座標変換
-	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
-
-	/// クロス積
-	Vector3 Cross(const Vector3& v1, const Vector3& v2);
-
-	// 更新処理
-	void Update();
-
-	// 描画処理
-	void Draw();
-
-private://メンバ変数
-
-	/// 3次元ベクトルメンバ変数の宣言
-	Vector3 v1_;
-	Vector3 v2_;
-	Vector3 cross_;
-};
-
+void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);

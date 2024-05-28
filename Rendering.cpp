@@ -2,48 +2,16 @@
 #include <Novice.h>
 using namespace std;
 
-//文字列の縦幅
-static const int kRowHeight = 20;
-
-//文字列の横幅
-static const int kColumnWidth = 60;
-	
-
-Rendering::Rendering()
-{
-#pragma region 定義しなければならない
-
-	//3次元ベクトル1
-	v1_ = { 1.2f,-3.9f,2.5f };
-	
-	//3次元ベクトル2
-	v2_ = { 2.8f,0.4f,-1.3f };
-	
-	//クロス積
-	cross_ = {};
-
-#pragma endregion
-}
-
-// 数値表示(3次元ベクトル用)
-void Rendering::VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label) {
-	Novice::ScreenPrintf(x, y, "%.02f", vector.x);
-	Novice::ScreenPrintf(x + kColumnWidth, y, "%.02f", vector.y);
-	Novice::ScreenPrintf(x + kColumnWidth * 2, y, "%.02f", vector.z);
-	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
-}
-
 // 関数cotの作成
-float Rendering::cot(float x)
+float cot(float x)
 {
 	return 1.0f / tanf(x);
 }
 
 #pragma region 4x4行列メンバ関数の定義
 
-
 // 行列の積
-Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
+Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 {
 	Matrix4x4 MultiplyMatrix{};
 
@@ -62,7 +30,7 @@ Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 }
 
 // 拡大縮小行列
-Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
+Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 {
 	
 	Matrix4x4 resultScale = {
@@ -76,7 +44,7 @@ Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
 }
 
 // X軸回転行列
-Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
+Matrix4x4 MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 rotateXMatrix = {
 		1.0f,0.0f,0.0f,0.0f,
@@ -89,7 +57,7 @@ Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 }
 
 // Y軸回転行列
-Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
+Matrix4x4 MakeRotateYMatrix(float radian)
 {
 	Matrix4x4 rotateYMatrix = {
 		cosf(radian),0.0f,-sinf(radian),0.0f,
@@ -102,7 +70,7 @@ Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 }
 
 // Z軸回転行列
-Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
+Matrix4x4 MakeRotateZMatrix(float radian)
 {
 	Matrix4x4 rotateZMatrix = {
 		cosf(radian),sinf(radian),0.0f,0.0f,
@@ -115,14 +83,14 @@ Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 }
 
 // 回転行列
-Matrix4x4 Rendering::MakeRotateMatrix(const Vector3& radian)
+Matrix4x4 MakeRotateMatrix(const Vector3& radian)
 {
 	//行列の積を使用して、X軸・Y軸・Z軸回転行列を結合する
 	return Multiply(MakeRotateXMatrix(radian.x), Multiply(MakeRotateYMatrix(radian.y), MakeRotateZMatrix(radian.z)));
 }
 
 // 平行移動行列
-Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
 {
 	Matrix4x4 resultTranslate = {
 		1.0f,0.0f,0.0f,0.0f,
@@ -135,14 +103,14 @@ Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
 }
 
 // アフィン変換行列
-Matrix4x4 Rendering::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
 {
 	//行列の積を使用し、拡大縮小行列・回転行列・平行移動行列を結合する
 	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateMatrix(rotate)),MakeTranslateMatrix(translate));
 }
 
 // 逆行列
-Matrix4x4 Rendering::Inverse(const Matrix4x4 &m)
+Matrix4x4 Inverse(const Matrix4x4 &m)
 {
 #pragma region //4x4行列の行列式Aを求める
 	float MatrixA = 1.0f / (m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] + m.m[0][0] * m.m[1][2] * m.m[2][3] * m.m[3][1] + m.m[0][0] * m.m[1][3] * m.m[2][1] * m.m[3][2] -
@@ -227,7 +195,7 @@ Matrix4x4 Rendering::Inverse(const Matrix4x4 &m)
 }
 
 // 透視投影行列
-Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
 {
 	Matrix4x4 resultPerspectiveFov = {
 		1.0f / aspectRatio * cot(fovY / 2.0f),0.0f,0.0f,0.0f,
@@ -240,7 +208,7 @@ Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, flo
 }
 
 // ビューポート変換行列
-Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
 {
 	Matrix4x4 resultViewport = {
 		width / 2.0f,0.0f,0.0f,0.0f,
@@ -252,10 +220,16 @@ Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, floa
 	return resultViewport;
 }
 
+// ビュープロジェクション行列
+Matrix4x4 MakeViewProjectionMatrix(const Matrix4x4& projectionMatrix, const Matrix4x4& viewMatrix) 
+{
+	return Multiply(projectionMatrix, viewMatrix);
+}
+
 #pragma endregion
 
 // 座標変換
-Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix) 
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) 
 {
 	Vector3 result;
 
@@ -272,31 +246,41 @@ Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix)
 	return result;
 }
 
-// クロス積
-Vector3 Rendering::Cross(const Vector3& v1, const Vector3& v2) 
+void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) 
 {
-	//クロス積を求める
-	Vector3 resultCross = { 
-		v1.y * v2.z - v1.z * v2.y,
-		v1.z * v2.x - v1.x * v2.z,
-		v1.x * v2.y - v1.y * v2.x 
-	};
+	const float kGirdHalfWidth = 2.0f;
+	const uint32_t kSubdivision = 10;
+	const float kGirdEvery = (kGirdHalfWidth * 2.0f) / float(kSubdivision);
 
-	return resultCross;
-}
+	for (uint32_t xIndex = 0; xIndex <= kSubdivision; ++xIndex) {
+		float positionX = -kGirdHalfWidth + (xIndex * kGirdEvery);
 
-void Rendering::Update() 
-{
-	//クロス積の演算
-	cross_ = Rendering::Cross(v1_, v2_);
-}
+		// 奥から手前への線
+		Vector3 start = { positionX, 0.0f, -kGirdHalfWidth };
+		Vector3 end = { positionX, 0.0f, kGirdHalfWidth };
 
-void Rendering::Draw() 
-{
-	//クロス積の計算結果表示
-	Rendering::VectorScreenPrintf(0, 0, cross_, "Cross");
+		// スクリーン座標系まで変換をかける
+		Vector3 screenStart = Transform(Transform(start, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenEnd = Transform(Transform(end, viewProjectionMatrix), viewportMatrix);
 
-	
+		// ラインの描画
+		Novice::DrawLine((int)screenStart.x, (int)screenStart.y, (int)screenEnd.x, (int)screenEnd.y, positionX == 0.0f ? BLACK : 0xAAAAAAFF);
+	}
+
+	for (uint32_t zIndex = 0; zIndex <= kSubdivision; ++zIndex) {
+		float positionZ = -kGirdHalfWidth + (zIndex * kGirdEvery);
+
+		// 左から右への線
+		Vector3 start = { -kGirdHalfWidth, 0.0f, positionZ };
+		Vector3 end = { kGirdHalfWidth, 0.0f, positionZ };
+
+		//スクリーン座標系まで変換をかける
+		Vector3 screenStart = Transform(Transform(start, viewProjectionMatrix), viewportMatrix);
+		Vector3 screenEnd = Transform(Transform(end, viewProjectionMatrix), viewportMatrix);
+
+		// ラインの描画（仮の関数）
+		Novice::DrawLine((int)screenStart.x, (int)screenStart.y, (int)screenEnd.x, (int)screenEnd.y, positionZ == 0.0f ? BLACK : 0xAAAAAAFF);
+	}
 }
 
 

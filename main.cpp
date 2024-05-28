@@ -1,26 +1,30 @@
 #include <Novice.h>
-#include "Camera.h"
-#include "Player.h"
+#include "Rendering.h"
 
 const char kWindowTitle[] = "GC2A_02_アリマ_ナオト";
+static inline const float kWindowWidth = 1280.0f;
+static inline const float kWindowHeight = 720.0f;
+
+
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, (int)Camera::GetkWindowWidth(), (int)Camera::GetkWindowHeight());
+	Novice::Initialize(kWindowTitle, (int)kWindowWidth, (int)kWindowHeight);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	//カメラクラスのインスタンスを作成
-	Affine cameraAffine = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.5f,5.0f}};
-	Camera* camera = new Camera(cameraAffine);
+	Vector3 cameraTranslate{ 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
+	Vector3 cameraScale{ 1.0f,1.0f,1.0f };
 
-	//Playerクラスのインスタンスを作成
-	Affine playerAffine = {{ 1.0f,1.0f,1.0f },{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f}};
-	Player* player = new Player(playerAffine);
+	Sphere sphere = {
+		{0.0f,0.0f,0.0f},
+		0.5f
+	};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -35,8 +39,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		camera->Update();
-		player->Update(keys, camera);
+		//カメラワールド行列
+		Matrix4x4 cameraWorldMatrix = MakeAffineMatrix(cameraScale,cameraRotate,cameraTranslate);
+		
+		//ビュー行列
+		Matrix4x4 viewMatrix = Inverse(cameraWorldMatrix);
+		
+		//プロジェクション行列
+		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
+		
+		//ビューポート行列
+		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
+
+		//ビューポート行列
+		Matrix4x4 viewprojectionMatrix = MakeViewProjectionMatrix(projectionMatrix, viewMatrix);
 
 		///
 		/// ↑更新処理ここまで
@@ -46,7 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		player->Draw();
+		GridDraw(viewprojectionMatrix, viewportMatrix);
 
 		///
 		/// ↑描画処理ここまで
@@ -63,6 +79,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの終了
 	Novice::Finalize();
-	delete camera, player;
+	
 	return 0;
 }
