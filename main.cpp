@@ -16,12 +16,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Vector3 translate = {};
-	Vector3 rotate = {};
+	Affine worldAffine = {
+		{1.0f,1.0f,1.0f},
+		{0,0,0},
+		{0,0,0},
+	};
 
-	Vector3 cameraTranslate{ 0.0f,1.9f,-6.49f };
-	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
-	Vector3 cameraScale{ 1.0f,1.0f,1.0f };
+	Affine cameraAffine{
+		{ 1.0f,1.0f,1.0f },
+		{ 0.26f,0.0f,0.0f },
+		{ 0.0f,1.9f,-6.49f }
+	};
 
 	Sphere sphere = {
 		{0.0f,0.0f,0.0f},
@@ -43,22 +48,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
+		//ワールド行列
+		Matrix4x4 worldMatrix = Rendering::MakeAffineMatrix(worldAffine);
 
 		//カメラワールド行列
-		Matrix4x4 cameraWorldMatrix = MakeAffineMatrix(cameraScale,cameraRotate,cameraTranslate);
+		Matrix4x4 cameraWorldMatrix = Rendering::MakeAffineMatrix(cameraAffine);
 		
 		//ビュー行列
-		Matrix4x4 viewMatrix = Inverse(cameraWorldMatrix);
+		Matrix4x4 viewMatrix = Rendering::Inverse(cameraWorldMatrix);
 		
 		//プロジェクション行列
-		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
+		Matrix4x4 projectionMatrix = Rendering::MakePerspectiveFovMatrix(0.45f, kWindowWidth / kWindowHeight, 0.1f, 100.0f);
 		
 		//ワールドビュープロジェクション行列
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
+		Matrix4x4 worldViewProjectionMatrix = Rendering::Multiply(worldMatrix, Rendering::Multiply(viewMatrix, projectionMatrix));
 
 		//ビューポート行列
-		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
+		Matrix4x4 viewportMatrix = Rendering::MakeViewportMatrix(0, 0, kWindowWidth, kWindowHeight, 0.0f, 1.0f);
 
 		///
 		/// ↑更新処理ここまで
@@ -70,14 +76,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//デバッグテキストの描画
 		ImGui::Begin("DebugWindow");
-		ImGui::DragFloat3("cameraTranslate", &cameraTranslate.x, 0.01f);
-		ImGui::DragFloat3("cameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("cameraTranslate", &cameraAffine.translate.x, 0.01f);
+		ImGui::DragFloat3("cameraRotate", &cameraAffine.rotate.x, 0.01f);
 		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
 		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
 		ImGui::End();
 
-		GridDraw(worldViewProjectionMatrix, viewportMatrix);
-		DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, color);
+		//グリッド線の描画
+		Rendering::GridDraw(worldViewProjectionMatrix, viewportMatrix);
+		
+		//球体の描画
+		Rendering::DrawSphere(sphere, worldViewProjectionMatrix, viewportMatrix, color);
 
 		///
 		/// ↑描画処理ここまで
@@ -94,6 +103,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの終了
 	Novice::Finalize();
-	
 	return 0;
 }

@@ -3,19 +3,15 @@
 using namespace std;
 
 // 関数cotの作成
-float cot(float x)
+float Rendering::cot(float x)
 {
 	return 1.0f / tanf(x);
-}
-
-float Dot(const Vector3& v1, const Vector3& v2) {
-	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 #pragma region 4x4行列メンバ関数の定義
 
 // 行列の積
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
+Matrix4x4 Rendering::Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 {
 	Matrix4x4 MultiplyMatrix{};
 
@@ -34,7 +30,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2)
 }
 
 // 拡大縮小行列
-Matrix4x4 MakeScaleMatrix(const Vector3& scale)
+Matrix4x4 Rendering::MakeScaleMatrix(const Vector3& scale)
 {
 	
 	Matrix4x4 resultScale = {
@@ -48,7 +44,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 }
 
 // X軸回転行列
-Matrix4x4 MakeRotateXMatrix(float radian)
+Matrix4x4 Rendering::MakeRotateXMatrix(float radian)
 {
 	Matrix4x4 rotateXMatrix = {
 		1.0f,0.0f,0.0f,0.0f,
@@ -61,7 +57,7 @@ Matrix4x4 MakeRotateXMatrix(float radian)
 }
 
 // Y軸回転行列
-Matrix4x4 MakeRotateYMatrix(float radian)
+Matrix4x4 Rendering::MakeRotateYMatrix(float radian)
 {
 	Matrix4x4 rotateYMatrix = {
 		cosf(radian),0.0f,-sinf(radian),0.0f,
@@ -74,7 +70,7 @@ Matrix4x4 MakeRotateYMatrix(float radian)
 }
 
 // Z軸回転行列
-Matrix4x4 MakeRotateZMatrix(float radian)
+Matrix4x4 Rendering::MakeRotateZMatrix(float radian)
 {
 	Matrix4x4 rotateZMatrix = {
 		cosf(radian),sinf(radian),0.0f,0.0f,
@@ -87,14 +83,14 @@ Matrix4x4 MakeRotateZMatrix(float radian)
 }
 
 // 回転行列
-Matrix4x4 MakeRotateMatrix(const Vector3& radian)
+Matrix4x4 Rendering::MakeRotateMatrix(const Vector3& radian)
 {
 	//行列の積を使用して、X軸・Y軸・Z軸回転行列を結合する
 	return Multiply(MakeRotateXMatrix(radian.x), Multiply(MakeRotateYMatrix(radian.y), MakeRotateZMatrix(radian.z)));
 }
 
 // 平行移動行列
-Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
+Matrix4x4 Rendering::MakeTranslateMatrix(const Vector3& translate)
 {
 	Matrix4x4 resultTranslate = {
 		1.0f,0.0f,0.0f,0.0f,
@@ -107,14 +103,14 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
 }
 
 // アフィン変換行列
-Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
+Matrix4x4 Rendering::MakeAffineMatrix(const Affine&affine)
 {
 	//行列の積を使用し、拡大縮小行列・回転行列・平行移動行列を結合する
-	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateMatrix(rotate)),MakeTranslateMatrix(translate));
+	return Multiply(Multiply(MakeScaleMatrix(affine.scale),MakeRotateMatrix(affine.rotate)),MakeTranslateMatrix(affine.translate));
 }
 
 // 逆行列
-Matrix4x4 Inverse(const Matrix4x4 &m)
+Matrix4x4 Rendering::Inverse(const Matrix4x4 &m)
 {
 #pragma region //4x4行列の行列式Aを求める
 	float MatrixA = 1.0f / (m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] + m.m[0][0] * m.m[1][2] * m.m[2][3] * m.m[3][1] + m.m[0][0] * m.m[1][3] * m.m[2][1] * m.m[3][2] -
@@ -199,7 +195,7 @@ Matrix4x4 Inverse(const Matrix4x4 &m)
 }
 
 // 透視投影行列
-Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
+Matrix4x4 Rendering::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip)
 {
 	Matrix4x4 resultPerspectiveFov = {
 		1.0f / aspectRatio * cot(fovY / 2.0f),0.0f,0.0f,0.0f,
@@ -212,7 +208,7 @@ Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip
 }
 
 // ビューポート変換行列
-Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
+Matrix4x4 Rendering::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
 {
 	Matrix4x4 resultViewport = {
 		width / 2.0f,0.0f,0.0f,0.0f,
@@ -224,16 +220,10 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	return resultViewport;
 }
 
-// ビュープロジェクション行列
-Matrix4x4 MakeViewProjectionMatrix(const Matrix4x4& projectionMatrix, const Matrix4x4& viewMatrix) 
-{
-	return Multiply(projectionMatrix, viewMatrix);
-}
-
 #pragma endregion
 
 // 座標変換
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) 
+Vector3 Rendering::Transform(const Vector3& vector, const Matrix4x4& matrix)
 {
 	Vector3 result;
 
@@ -250,7 +240,7 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix)
 	return result;
 }
 
-void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) 
+void Rendering::GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix)
 {
 	const float kGirdHalfWidth = 2.0f;
 	const uint32_t kSubdivision = 10;
@@ -287,7 +277,7 @@ void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 	}
 }
 
-void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+void Rendering::DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
 {
 	const uint32_t kSubdivision = 10; // 分割数
 	const float kLonEvery = (2.0f * float(M_PI)) / kSubdivision; // 経度分割1つ分の角度

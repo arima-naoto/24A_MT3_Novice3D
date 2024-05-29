@@ -6,47 +6,52 @@
 #include <cmath>
 #include <cassert>
 
-float cot(float x);
+class Rendering 
+{
+public:
 
-/// 行列の積
-Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+	static float cot(float x);
 
-/// 拡大縮小行列
-Matrix4x4 MakeScaleMatrix(const Vector3& scale);
+	/// 行列の積
+	static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
-/// X軸回転行列
-Matrix4x4 MakeRotateXMatrix(float radian);
+	/// 拡大縮小行列
+	static Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
-/// Y軸回転行列
-Matrix4x4 MakeRotateYMatrix(float radian);
+	/// X軸回転行列
+	static Matrix4x4 MakeRotateXMatrix(float radian);
 
-/// Z軸回転行列
-Matrix4x4 MakeRotateZMatrix(float radian);
+	/// Y軸回転行列
+	static Matrix4x4 MakeRotateYMatrix(float radian);
 
-/// 回転行列
-Matrix4x4 MakeRotateMatrix(const Vector3& radian);
+	/// Z軸回転行列
+	static Matrix4x4 MakeRotateZMatrix(float radian);
 
-/// 平行移動行列
-Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+	/// 回転行列
+	static Matrix4x4 MakeRotateMatrix(const Vector3& radian);
 
-/// アフィン変換行列
-Matrix4x4 MakeAffineMatrix(const Vector3 &scale,const Vector3 &rotate,const Vector3 &translate);
+	/// 平行移動行列
+	static Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
-/// 逆行列
-Matrix4x4 Inverse(const Matrix4x4& m);
+	/// アフィン変換行列
+	static Matrix4x4 MakeAffineMatrix(const Affine& affine);
 
-/// 透視投影行列
-Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+	/// 逆行列
+	static Matrix4x4 Inverse(const Matrix4x4& m);
 
-/// ビューポート変換行列
-Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
+	/// 透視投影行列
+	static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
-/// 座標変換
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+	/// ビューポート変換行列
+	static Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
-/// ビュープロジェクション行列
-Matrix4x4 MakeViewProjectionMatrix(const Matrix4x4& projectionMatrix, const Matrix4x4& viewMatrix);
+	/// 座標変換
+	static Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
-void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+	//グリッド線を描画するメンバ関数
+	static void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 
-void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+	//球体を描画するメンバ関数
+	static void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+};
