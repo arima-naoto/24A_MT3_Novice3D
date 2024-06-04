@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cassert>
 
-class Rendering 
+class Maths 
 {
 public:
 
@@ -34,7 +34,7 @@ public:
 	static Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
 	/// アフィン変換行列
-	static Matrix4x4 MakeAffineMatrix(const Affine& affine);
+	static Matrix4x4 AffineMatrix(const Affine& affine);
 
 	/// 逆行列
 	static Matrix4x4 Inverse(const Matrix4x4& m);
@@ -43,15 +43,9 @@ public:
 	static Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
 	/// ビューポート変換行列
-	static Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
+	static Matrix4x4 ViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 	/// 座標変換
 	static Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
-
-	//グリッド線を描画するメンバ関数
-	static void GridDraw(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
-
-	//球体を描画するメンバ関数
-	static void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 };
