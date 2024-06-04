@@ -26,11 +26,6 @@ public://メンバ関数
 	void Update();
 
 	/// <summary>
-	/// デバッグテキスト描画メンバ関数
-	/// </summary>
-	void DrawDebugText();
-
-	/// <summary>
 	/// グリッド線描画メンバ関数
 	/// </summary>
 	/// <param name="viewProjectionMatrix">ビュープロジェクション行列</param>
@@ -64,15 +59,6 @@ private://メンバ変数
 
 	//カメラクラス
 	Camera* camera_;
-
-	//スフィア構造体
-	Sphere sphere_;
-
-	//グリッド線を描画する色
-	uint32_t gridColor_;
-
-	//球体を描画する色
-	uint32_t sphereColor_;
 
 };
 

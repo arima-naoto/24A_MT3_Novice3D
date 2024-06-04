@@ -12,6 +12,8 @@ public:
 
 	static float cot(float x);
 
+
+
 	/// 行列の積
 	static Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 

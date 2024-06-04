@@ -29,17 +29,7 @@ Game::Game()
 	//カメラクラスのインスタンスを作成
 	camera_ = new Camera(cameraAffine_);
 
-	//スフィア構造体の初期化
-	sphere_ = {
-		{0.0f,0.0f,0.0f},
-		0.5f
-	};
-
-	//グリッド線を描画する色
-	gridColor_ = 0xAAAAAAFF;
-
-	//球体を描画する色
-	sphereColor_ = BLACK;
+	
 
 #pragma endregion
 }
@@ -78,19 +68,6 @@ void Game::Update()
 	camera_->MakeViewportMatrix();
 
 #pragma endregion
-}
-
-/// <summary>
-/// デバッグテキスト描画処理
-/// </summary>
-void Game::DrawDebugText() 
-{
-	ImGui::Begin("DebugWindow");
-	ImGui::DragFloat3("cameraTranslate", &cameraAffine_.translate.x, 0.01f);
-	ImGui::DragFloat3("cameraRotate", &cameraAffine_.rotate.x, 0.01f);
-	ImGui::DragFloat3("SphereCenter", &sphere_.center.x, 0.01f);
-	ImGui::DragFloat("sphereRadius", &sphere_.radius, 0.01f);
-	ImGui::End();
 }
 
 /// <summary>
@@ -199,14 +176,26 @@ void Game::Main()
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, (int)camera_->GetKWindowWidth(), (int)camera_->GetKWindowHeight());
 
+	// キー入力結果を受け取る箱
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
+
+	//スフィア構造体
+	Sphere sphere{
+		{0.0f,0.0f,0.0f},
+		0.5f
+	};
+
+	//グリッド線を描画する色
+	uint32_t gridColor_ = 0xAAAAAAFF;
+
+	//球体を描画する色
+	uint32_t sphereColor_ = BLACK;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
 		Novice::BeginFrame();
-
-		// キー入力結果を受け取る箱
-		char keys[256] = { 0 };
-		char preKeys[256] = { 0 };
 
 		// キー入力を受け取る
 		memcpy(preKeys, keys, 256);
@@ -228,13 +217,18 @@ void Game::Main()
 		///
 
 		//デバッグテキストの描画
-		Game::DrawDebugText();
+		ImGui::Begin("DebugWindow");
+		ImGui::DragFloat3("cameraTranslate", &cameraAffine_.translate.x, 0.01f);
+		ImGui::DragFloat3("cameraRotate", &cameraAffine_.rotate.x, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("sphereRadius", &sphere.radius, 0.01f);
+		ImGui::End();
 
 		//グリッド線の描画
 		Game::DrawGrid(world_->GetViewProjectionMatrix(), camera_->GetViewportMatrix(), gridColor_);
 		
 		//球体の描画
-		Game::DrawSphere(sphere_, world_->GetViewProjectionMatrix(), camera_->GetViewportMatrix(), sphereColor_);
+		Game::DrawSphere(sphere, world_->GetViewProjectionMatrix(), camera_->GetViewportMatrix(), sphereColor_);
 
 		///
 		/// ↑描画処理ここまで
