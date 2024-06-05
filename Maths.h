@@ -8,14 +8,14 @@
 /// <summary>
 /// Renderingクラスの作成
 /// </summary>
-class Rendering
+class Maths
 {
 public://メンバ関数の作成
 
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Rendering();
+	Maths();
 
 	/// 3次元ベクトル用
 	void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* lebel);

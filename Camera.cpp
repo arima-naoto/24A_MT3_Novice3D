@@ -27,14 +27,14 @@ Camera::Camera(Affine affine)
 void Camera::Update()
 {
 	//アフィン変換
-	cameraWorldMatrix_ = Rendering::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
+	cameraWorldMatrix_ = Maths::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
 
 	//ビュー行列
-	viewMatrix_ = Rendering::Inverse(cameraWorldMatrix_);
+	viewMatrix_ = Maths::Inverse(cameraWorldMatrix_);
 
 	//射影行列
-	projectionMatrix_ = Rendering::MakePerspectiveFovMatrix(0.45f, Camera::GetkWindowWidth() / Camera::GetkWindowHeight(), 0.1f, 100.0f);
+	projectionMatrix_ = Maths::MakePerspectiveFovMatrix(0.45f, Camera::GetkWindowWidth() / Camera::GetkWindowHeight(), 0.1f, 100.0f);
 
 	//ビューポート行列
-	viewportMatrix_ = Rendering::MakeViewportMatrix(0, 0, Camera::GetkWindowWidth(), Camera::GetkWindowHeight(), 0.0f, 1.0f);
+	viewportMatrix_ = Maths::MakeViewportMatrix(0, 0, Camera::GetkWindowWidth(), Camera::GetkWindowHeight(), 0.0f, 1.0f);
 }
