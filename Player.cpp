@@ -85,32 +85,44 @@ void Player::Move(char *keys)
 void Player::Update(char *keys,Camera * camera)
 {
 	//クロス積の演算処理
-	Rendering::Update();
+	Maths::Update();
 
 	//ポリゴンの移動処理
 	Player::Move(keys);
 
 	//ワールド行列
-	worldMatrix_ = Rendering::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
+	worldMatrix_ = Maths::MakeAffineMatrix(affine_.scale, affine_.rotate, affine_.translate);
 	
 	//ワールドビュープロジェクション行列
-	worldViewProjectionMatrix_ = Rendering::Multiply(worldMatrix_, Rendering::Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
+	worldViewProjectionMatrix_ = Maths::Multiply(worldMatrix_, Maths::Multiply(camera->GetViewMatrix(), camera->GetProjectionMatrix()));
 
 	//座標変換
 	for (uint32_t i = 0; i < 3; ++i) {
-		ndcVertex_ = Rendering::Transform(kLocalVertices_[i], worldViewProjectionMatrix_);
-		screenVertices_[i] = Rendering::Transform(ndcVertex_, camera->GetViewportMatrix());
+		ndcVertex_ = Maths::Transform(kLocalVertices_[i], worldViewProjectionMatrix_);
+		screenVertices_[i] = Maths::Transform(ndcVertex_, camera->GetViewportMatrix());
 	}
 }
 
 void Player::Draw()
 {
 	//クロス積の計算結果を表示
-	Rendering::Draw();
+	Maths::Draw();
 	
-	//DrawTriangleで座標変換済みの三角形を表示する
-	Novice::DrawTriangle(
-		int(screenVertices_[0].x), int(screenVertices_[0].y), int(screenVertices_[1].x), int(screenVertices_[1].y),
-		int(screenVertices_[2].x), int(screenVertices_[2].y), RED, kFillModeSolid
-	);
+	// 三角形の法線ベクトルを計算
+	Vector3 edge1 = screenVertices_[1] - screenVertices_[0];
+
+	Vector3 edge2 = screenVertices_[2] - screenVertices_[0];
+
+	Vector3 normal = Maths::Cross(edge1, edge2);
+
+	Vector3 viewDir = { 0.0f,0.0f,1.0f };
+
+	//DrawTriangleで座標変換済みの三角形を表示する、ただし先程の情報を使用して、表であれば描画し、裏であれば表示しない			
+	if (!Maths::RearPowerRing(normal, viewDir)) 
+	{
+		Novice::DrawTriangle(
+			int(screenVertices_[0].x), int(screenVertices_[0].y), int(screenVertices_[1].x), int(screenVertices_[1].y),
+			int(screenVertices_[2].x), int(screenVertices_[2].y), RED, kFillModeSolid
+		);
+	}
 }

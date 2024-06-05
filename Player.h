@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "Rendering.h"
+#include "Maths.h"
 #include "Camera.h"
 #include "Struct.h"
 
 #pragma region Renderingクラスを継承したPlayerクラスを作成
 
-class Player : public Rendering
+class Player : public Maths
 {
 public:// メンバ関数
 

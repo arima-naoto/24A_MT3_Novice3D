@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include "Rendering.h"
+#include "Maths.h"
 #include "Struct.h"
 
 #pragma region Renderingクラスを継承したCameraクラスを宣言
 
-class Camera : public Rendering
+class Camera : public Maths
 {
 public://メンバ関数
 
