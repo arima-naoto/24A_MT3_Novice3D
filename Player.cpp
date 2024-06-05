@@ -109,15 +109,24 @@ void Player::Draw()
 	Maths::Draw();
 	
 	// 三角形の法線ベクトルを計算
-	Vector3 edge1 = screenVertices_[1] - screenVertices_[0];
+	Vector3 edge1 = {
+		screenVertices_[1].x - screenVertices_[0].x,
+		screenVertices_[1].y - screenVertices_[0].y,
+		screenVertices_[1].z - screenVertices_[0].z,
+	};
 
-	Vector3 edge2 = screenVertices_[2] - screenVertices_[0];
+	Vector3 edge2 = {
+		screenVertices_[2].x - screenVertices_[0].x,
+		screenVertices_[2].y - screenVertices_[0].y,
+		screenVertices_[2].z - screenVertices_[0].z,
+	};
 
 	Vector3 normal = Maths::Cross(edge1, edge2);
 
 	Vector3 viewDir = { 0.0f,0.0f,1.0f };
 
-	//DrawTriangleで座標変換済みの三角形を表示する、ただし先程の情報を使用して、表であれば描画し、裏であれば表示しない			
+	// DrawTriangleで座標変換済みの三角形を表示する
+	// (先程の情報を使用して、表であれば描画し、裏であれば描画しない)			
 	if (!Maths::RearPowerRing(normal, viewDir)) 
 	{
 		Novice::DrawTriangle(
