@@ -171,10 +171,6 @@ void Game::DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatri
 /// </summary>
 void Game::Main() 
 {
-	const char kWindowTitle[] = "GC2A_02_アリマ_ナオト";
-
-	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, (int)camera_->GetKWindowWidth(), (int)camera_->GetKWindowHeight());
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };

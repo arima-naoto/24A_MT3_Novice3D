@@ -23,12 +23,6 @@ Camera::Camera(Affine affine)
 	//ビューポート行列
 	viewportMatrix_ = {};
 
-	//画面横幅
-	kWindowWidth_ = 1280.0f;
-
-	//画面縦幅
-	kWindowHeight_ = 720.0f;
-
 #pragma endregion
 }
 

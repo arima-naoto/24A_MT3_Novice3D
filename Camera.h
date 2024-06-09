@@ -52,10 +52,10 @@ public://メンバ変数のゲッター
 	Matrix4x4 GetViewportMatrix();
 
 	//画面横幅のゲッター
-	float GetKWindowWidth();
+	static float GetKWindowWidth();
 
 	//画面縦幅のゲッター
-	float GetKWindowHeight();
+	static float GetKWindowHeight();
 
 private://メンバ変数
 
@@ -75,10 +75,10 @@ private://メンバ変数
 	Matrix4x4 viewportMatrix_;
 
 	//画面横幅
-	float kWindowWidth_;
+	static inline const float kWindowWidth_ = 1280.0f;
 
 	//画面縦幅
-	float kWindowHeight_;
+	static inline const float kWindowHeight_ = 720.0f;
 
 };
 
