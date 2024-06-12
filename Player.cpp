@@ -32,8 +32,10 @@ Player::Player(Affine affine)
 		screenVertices_[i] = {};
 	}
 
+	//ワールドマトリックス
 	worldMatrix_ = {};
 
+	//ワールドビュープロジェクション
 	worldViewProjectionMatrix_ = {};
 
 #pragma endregion
@@ -43,28 +45,36 @@ void Player::Translate(char*keys)
 {
 #pragma region キー入力処理
 
-	if (keys[DIK_D])//Dキーが押されている間
+	//ボタンキーの配列型変数を用意
+	char bottomKeys[4] = {
+		keys[DIK_D], //Dキー
+		keys[DIK_A], //Aキー
+		keys[DIK_W], //Wキー
+		keys[DIK_S]  //Sキー
+	};
+
+	if (bottomKeys[0])//Dキーが押されている間
 	{
 		//三角形を右に動かす
-		affine_.translate.x -= translateSpeed_.x;
+		affine_.translate -= Vector3(translateSpeed_.x, 0, 0);
 	}
 
-	if (keys[DIK_A])//Aキーが押されている間
+	if (bottomKeys[1])//Aキーが押されている間
 	{
 		//三角形を左に動かす
-		affine_.translate.x += translateSpeed_.x;
+		affine_.translate += Vector3(translateSpeed_.x, 0, 0);
 	}
 
-	if (keys[DIK_W])//Wキーが押されている間 
+	if (bottomKeys[2])//Wキーが押されている間 
 	{
 		//三角形を前に動かす
-		affine_.translate.z += translateSpeed_.z;
+		affine_.translate += Vector3(0, 0, translateSpeed_.z);
 	}
 
-	if (keys[DIK_S])//Sキーが押されている間 
+	if (bottomKeys[3])//Sキーが押されている間 
 	{
 		//三角形を後ろに動かす
-		affine_.translate.z -= translateSpeed_.z;
+		affine_.translate -= Vector3(0, 0, translateSpeed_.z);
 	}
 
 #pragma endregion
@@ -73,7 +83,7 @@ void Player::Translate(char*keys)
 void Player::Rotate()
 {
 	//Y軸を中心に回転させる
-	affine_.rotate.y += rotateSpeed_;
+	affine_.rotate += Vector3(0, rotateSpeed_, 0);
 }
 
 void Player::Move(char *keys)
