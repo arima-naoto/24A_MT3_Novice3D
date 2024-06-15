@@ -135,10 +135,10 @@ Matrix4x4 Maths::MakeTranslateMatrix(const Vector3& translate)
 }
 
 // アフィン変換行列
-Matrix4x4 Maths::MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
+Matrix4x4 Maths::AffineMatrix(Affine affine)
 {
 	//行列の積を使用し、拡大縮小行列・回転行列・平行移動行列を結合する
-	return Multiply(Multiply(MakeScaleMatrix(scale),MakeRotateMatrix(rotate)),MakeTranslateMatrix(translate));
+	return Multiply(Multiply(MakeScaleMatrix(affine.scale),MakeRotateMatrix(affine.rotate)),MakeTranslateMatrix(affine.translate));
 }
 
 // 逆行列
@@ -240,7 +240,7 @@ Matrix4x4 Maths::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float n
 }
 
 // ビューポート変換行列
-Matrix4x4 Maths::MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
+Matrix4x4 Maths::ViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth)
 {
 	Matrix4x4 resultViewport = {
 		width / 2.0f,0.0f,0.0f,0.0f,
@@ -255,7 +255,7 @@ Matrix4x4 Maths::MakeViewportMatrix(float left, float top, float width, float he
 #pragma endregion
 
 // 座標変換
-Vector3 Maths::Transform(const Vector3& vector, const Matrix4x4& matrix) 
+Vector3 Maths::Transform(const Vector3& vector, const Matrix4x4& matrix)
 {
 	Vector3 result;
 
@@ -273,7 +273,7 @@ Vector3 Maths::Transform(const Vector3& vector, const Matrix4x4& matrix)
 }
 
 // クロス積
-Vector3 Maths::Cross(const Vector3& v1, const Vector3& v2) 
+Vector3 Maths::Cross(const Vector3& v1, const Vector3& v2)
 {
 	//クロス積を求める
 	Vector3 resultCross = { 
@@ -285,13 +285,13 @@ Vector3 Maths::Cross(const Vector3& v1, const Vector3& v2)
 	return resultCross;
 }
 
-void Maths::Update() 
+void Maths::Update()
 {
 	//クロス積の演算
 	cross_ = Maths::Cross(v1_, v2_);
 }
 
-void Maths::Draw() 
+void Maths::Draw()
 {
 	//クロス積の計算結果表示
 	Maths::VectorScreenPrintf(0, 0, cross_, "Cross");
