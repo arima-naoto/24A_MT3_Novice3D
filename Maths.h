@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "Matrix4x4.h"
 #include "Vector3.h"
+#include "Struct.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <cassert>
@@ -48,7 +49,7 @@ public://メンバ関数の作成
 	Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
 	/// アフィン変換行列
-	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+	Matrix4x4 AffineMatrix(Affine affine);
 
 	/// 逆行列
 	Matrix4x4 Inverse(const Matrix4x4& m);
@@ -57,7 +58,7 @@ public://メンバ関数の作成
 	Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
 	/// ビューポート変換行列
-	Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
+	Matrix4x4 ViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 	/// 座標変換
 	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);

@@ -11,23 +11,45 @@ public://メンバ関数
 	//コンストラクタ
 	Camera(Affine affine);
 
-	//更新処理
-	void Update();
+	///デストラクタ
+	~Camera();
+
+	/// <summary>
+	/// アフィン行列
+	/// </summary>
+	/// <param name="affine"></param>
+	void MakeAffineMatrix(Affine affine);
+
+	/// <summary>
+	/// ビュー行列
+	/// </summary>
+	/// <param name="v"></param>
+	void MakeViewMatrix();
+
+	/// <summary>
+	/// プロジェクション行列
+	/// </summary>
+	void MakeProjectionMatrix();
+
+	/// <summary>
+	/// ビューポート行列
+	/// </summary>
+	void MakeViewportMatrix();
 
 public://Cameraクラスのメンバ変数のカプセル化
 
-	static float GetkWindowWidth() { return kWindowWidth_; };
-
-	static float GetkWindowHeight() { return kWindowHeight_; };
-
 	//ビュー行列のゲッター
-	Matrix4x4 GetViewMatrix() { return viewMatrix_; };
+	Matrix4x4 GetViewMatrix();
 
 	//射影行列のゲッター
-	Matrix4x4 GetProjectionMatrix() { return projectionMatrix_; };
+	Matrix4x4 GetProjectionMatrix();
 
 	//ビューポート行列のゲッター
-	Matrix4x4 GetViewportMatrix() { return viewportMatrix_; };
+	Matrix4x4 GetViewportMatrix();
+
+	static float GetkWindowWidth();
+
+	static float GetkWindowHeight();
 
 private://メンバ変数
 
