@@ -27,9 +27,9 @@ Camera::Camera(Affine affine)
 Camera::~Camera(){}
 
 ///カメラワールド行列の定義
-void Camera::MakeAffineMatrix() 
+void Camera::MakeAffineMatrix(Affine affine)
 {
-	cameraWorldMatrix_ = Maths::AffineMatrix(affine_);
+	cameraWorldMatrix_ = Maths::AffineMatrix(affine);
 }
 
 ///ビュー行列の定義

@@ -20,9 +20,9 @@ World::~World(){}
 /// ワールド行列を作成する
 /// </summary>
 /// <param name="affine"></param>
-void World::MakeAffineMatrix() 
+void World::MakeAffineMatrix(Affine affine)
 {
-	worldMatrix_ = Maths::AffineMatrix(affine_);
+	worldMatrix_ = Maths::AffineMatrix(affine);
 }
 
 /// <summary>
