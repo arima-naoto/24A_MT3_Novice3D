@@ -71,9 +71,9 @@ void Game::MakeRendering()
 {
 #pragma region レンダリングパイプラインを作成
 
-	world_->MakeAffineMatrix(worldAffine_);
+	world_->MakeAffineMatrix();
 
-	camera_->MakeAffineMatrix(cameraAffine_);
+	camera_->MakeAffineMatrix();
 
 	camera_->MakeViewMatrix();
 

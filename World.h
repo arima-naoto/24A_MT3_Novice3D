@@ -23,7 +23,7 @@ public://メンバ関数
 	/// Affine行列
 	/// </summary>
 	/// <param name="affine"></param>
-	void MakeAffineMatrix(Affine affine);
+	void MakeAffineMatrix();
 
 	/// <summary>
 	/// ビュープロジェクション行列

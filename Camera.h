@@ -18,7 +18,7 @@ public://メンバ関数
 	/// アフィン行列
 	/// </summary>
 	/// <param name="affine"></param>
-	void MakeAffineMatrix(Affine affine);
+	void MakeAffineMatrix();
 
 	/// <summary>
 	/// ビュー行列
